@@ -170,17 +170,17 @@ import PassKit
     /// Defaults to `STPAPIClient.shared`.
     public var apiClient: STPAPIClient = .shared
     
-    /// The STPAPIClient instance to use to make API requests to Stripe.
-    /// Defaults to `STPAPIClient.shared`.
-    @available(swift, deprecated: 0.0.1, renamed: "apiClient")
-    @objc(apiClient) public var _objc_apiClient: _stpobjc_STPAPIClient {
-        get {
-            _stpobjc_STPAPIClient(apiClient: apiClient)
-        }
-        set {
-            apiClient = newValue._apiClient
-        }
-    }
+//    /// The STPAPIClient instance to use to make API requests to Stripe.
+//    /// Defaults to `STPAPIClient.shared`.
+//    @available(swift, deprecated: 0.0.1, renamed: "apiClient")
+//    @objc(apiClient) public var _objc_apiClient: _stpobjc_STPAPIClient {
+//        get {
+//            _stpobjc_STPAPIClient(apiClient: apiClient)
+//        }
+//        set {
+//            apiClient = newValue._apiClient
+//        }
+//    }
     
     private weak var delegate: STPApplePayContextDelegate?
     @objc var authorizationController: PKPaymentAuthorizationController?

@@ -33,43 +33,17 @@ import Foundation
     /// The payment intent requires additional action handled by `STPPaymentHandler`.
     case useStripeSDK
 
-    /// The action type is OXXO payment. We provide `STPPaymentHandler` to display
-    /// the OXXO voucher.
-    case OXXODisplayDetails
-
-    /// Contains instructions for authenticating a payment by redirecting your customer to Alipay App or website.
-    case alipayHandleRedirect
-
-    /// The action type for BLIK payment methods. The customer must authorize the transaction in their banking app within 1 minute.
-    case BLIKAuthorize
-    
-    /// Contains instructions for authenticating a payment by redirecting your customer to the WeChat Pay App.
-    case weChatPayRedirectToApp
-
-    /// The action type is Boleto payment. We provide `STPPaymentHandler` to display the Boleto voucher.
-    case boletoDisplayDetails
-
     /// Parse the string and return the correct `STPIntentActionType`,
     /// or `STPIntentActionTypeUnknown` if it's unrecognized by this version of the SDK.
     /// - Parameter string: the NSString with the `next_action.type`
     internal init(string: String) {
         switch string.lowercased() {
-        case "redirect_to_url":
-            self = .redirectToURL
-        case "use_stripe_sdk":
-            self = .useStripeSDK
-        case "oxxo_display_details":
-            self = .OXXODisplayDetails
-        case "alipay_handle_redirect":
-            self = .alipayHandleRedirect
-        case "wechat_pay_redirect_to_ios_app":
-            self = .weChatPayRedirectToApp
-        case "boleto_display_details":
-            self = .boletoDisplayDetails
-        case "blik_authorize":
-            self = .BLIKAuthorize
-        default:
-            self = .unknown
+            case "redirect_to_url":
+                self = .redirectToURL
+            case "use_stripe_sdk":
+                self = .useStripeSDK
+            default:
+                self = .unknown
         }
     }
 
@@ -78,22 +52,12 @@ import Foundation
     /// - Returns: the string, or @"unknown" if this was an unrecognized type
     internal var stringValue: String {
         switch self {
-        case .redirectToURL:
-            return "redirect_to_url"
-        case .useStripeSDK:
-            return "use_stripe_sdk"
-        case .OXXODisplayDetails:
-            return "oxxo_display_details"
-        case .alipayHandleRedirect:
-            return "alipay_handle_redirect"
-        case .BLIKAuthorize:
-            return "blik_authorize"
-        case .weChatPayRedirectToApp:
-            return "wechat_pay_redirect_to_ios_app"
-        case .boletoDisplayDetails:
-            return "boleto_display_details"
-        case .unknown:
-            break
+            case .redirectToURL:
+                return "redirect_to_url"
+            case .useStripeSDK:
+                return "use_stripe_sdk"
+            default:
+                break
         }
 
         // catch any unknown values here
@@ -115,18 +79,6 @@ public class STPIntentAction: NSObject {
     /// The details for authorizing via URL, when `type == .redirectToURL`
     @objc public let redirectToURL: STPIntentActionRedirectToURL?
 
-    /// The details for displaying OXXO voucher via URL, when `type == .OXXODisplayDetails`
-    @objc public let oxxoDisplayDetails: STPIntentActionOXXODisplayDetails?
-
-    /// Contains instructions for authenticating a payment by redirecting your customer to Alipay App or website.
-    @objc public let alipayHandleRedirect: STPIntentActionAlipayHandleRedirect?
-
-    /// Contains instructions for authenticating a payment by redirecting your customer to the WeChat Pay app.
-    @objc public let weChatPayRedirectToApp: STPIntentActionWechatPayRedirectToApp?
-
-    /// The details for displaying Boleto voucher via URL, when `type == .boleto`
-    @objc public let boletoDisplayDetails: STPIntentActionBoletoDisplayDetails?
-
     internal let useStripeSDK: STPIntentActionUseStripeSDK?
 
     /// :nodoc:
@@ -143,35 +95,17 @@ public class STPIntentAction: NSObject {
 
         // omit properties that don't apply to this type
         switch type {
-        case .redirectToURL:
-            if let redirectToURL = redirectToURL {
-                props.append("redirectToURL = \(redirectToURL)")
-            }
-        case .useStripeSDK:
-            if let useStripeSDK = useStripeSDK {
-                props.append("useStripeSDK = \(useStripeSDK)")
-            }
-        case .OXXODisplayDetails:
-            if let oxxoDisplayDetails = oxxoDisplayDetails {
-                props.append("oxxoDisplayDetails = \(oxxoDisplayDetails)")
-            }
-        case .alipayHandleRedirect:
-            if let alipayHandleRedirect = alipayHandleRedirect {
-                props.append("alipayHandleRedirect = \(alipayHandleRedirect)")
-            }
-        case .weChatPayRedirectToApp:
-            if let weChatPayRedirectToApp = weChatPayRedirectToApp {
-                props.append("weChatPayRedirectToApp = \(weChatPayRedirectToApp)")
-            }
-        case .boletoDisplayDetails:
-            if let boletoDisplayDetails = boletoDisplayDetails {
-                props.append("boletoDisplayDetails = \(boletoDisplayDetails)")
-            }
-        case .BLIKAuthorize:
-            break // no additional details
-        case .unknown:
-            // unrecognized type, just show the original dictionary for debugging help
-            props.append("allResponseFields = \(allResponseFields)")
+            case .redirectToURL:
+                if let redirectToURL = redirectToURL {
+                    props.append("redirectToURL = \(redirectToURL)")
+                }
+            case .useStripeSDK:
+                if let useStripeSDK = useStripeSDK {
+                    props.append("useStripeSDK = \(useStripeSDK)")
+                }
+            case .unknown:
+                // unrecognized type, just show the original dictionary for debugging help
+                props.append("allResponseFields = \(allResponseFields)")
         }
 
         return "<\(props.joined(separator: "; "))>"
@@ -180,20 +114,12 @@ public class STPIntentAction: NSObject {
     internal init(
         type: STPIntentActionType,
         redirectToURL: STPIntentActionRedirectToURL?,
-        alipayHandleRedirect: STPIntentActionAlipayHandleRedirect?,
         useStripeSDK: STPIntentActionUseStripeSDK?,
-        oxxoDisplayDetails: STPIntentActionOXXODisplayDetails?,
-        weChatPayRedirectToApp: STPIntentActionWechatPayRedirectToApp?,
-        boletoDisplayDetails: STPIntentActionBoletoDisplayDetails?,
         allResponseFields: [AnyHashable: Any]
     ) {
         self.type = type
         self.redirectToURL = redirectToURL
-        self.alipayHandleRedirect = alipayHandleRedirect
         self.useStripeSDK = useStripeSDK
-        self.oxxoDisplayDetails = oxxoDisplayDetails
-        self.weChatPayRedirectToApp = weChatPayRedirectToApp
-        self.boletoDisplayDetails = boletoDisplayDetails
         self.allResponseFields = allResponseFields
         super.init()
     }
@@ -205,7 +131,7 @@ extension STPIntentAction: STPAPIResponseDecodable {
     @objc
     public class func decodedObject(fromAPIResponse response: [AnyHashable: Any]?) -> Self? {
         guard let dict = response,
-            let rawType = dict["type"] as? String
+              let rawType = dict["type"] as? String
         else {
             return nil
         }
@@ -215,63 +141,28 @@ extension STPIntentAction: STPAPIResponseDecodable {
         // STPIntentActionRedirectToURL object fails, map type to `.unknown`
         var type = STPIntentActionType(string: rawType)
         var redirectToURL: STPIntentActionRedirectToURL?
-        var alipayHandleRedirect: STPIntentActionAlipayHandleRedirect?
         var useStripeSDK: STPIntentActionUseStripeSDK?
-        var oxxoDisplayDetails: STPIntentActionOXXODisplayDetails?
-        var boletoDisplayDetails: STPIntentActionBoletoDisplayDetails?
-        var weChatPayRedirectToApp: STPIntentActionWechatPayRedirectToApp?
 
         switch type {
-        case .unknown:
-            break
-        case .redirectToURL:
-            redirectToURL = STPIntentActionRedirectToURL.decodedObject(
-                fromAPIResponse: dict["redirect_to_url"] as? [AnyHashable: Any])
-            if redirectToURL == nil {
-                type = .unknown
-            }
-        case .useStripeSDK:
-            useStripeSDK = STPIntentActionUseStripeSDK.decodedObject(
-                fromAPIResponse: dict["use_stripe_sdk"] as? [AnyHashable: Any])
-            if useStripeSDK == nil {
-                type = .unknown
-            }
-        case .OXXODisplayDetails:
-            oxxoDisplayDetails = STPIntentActionOXXODisplayDetails.decodedObject(
-                fromAPIResponse: dict["oxxo_display_details"] as? [AnyHashable: Any])
-            if oxxoDisplayDetails == nil {
-                type = .unknown
-            }
-        case .alipayHandleRedirect:
-            alipayHandleRedirect = STPIntentActionAlipayHandleRedirect.decodedObject(
-                fromAPIResponse: dict["alipay_handle_redirect"] as? [AnyHashable: Any])
-            if alipayHandleRedirect == nil {
-                type = .unknown
-            }
-        case .weChatPayRedirectToApp:
-            weChatPayRedirectToApp = STPIntentActionWechatPayRedirectToApp.decodedObject(
-                fromAPIResponse: dict["wechat_pay_redirect_to_ios_app"] as? [AnyHashable: Any])
-            if weChatPayRedirectToApp == nil {
-                type = .unknown
-            }
-        case .boletoDisplayDetails:
-            boletoDisplayDetails = STPIntentActionBoletoDisplayDetails.decodedObject(
-                fromAPIResponse: dict["boleto_display_details"] as? [AnyHashable: Any])
-            if boletoDisplayDetails == nil {
-                type = .unknown
-            }
-        case .BLIKAuthorize:
-            break // no additional details
+            case .redirectToURL:
+                redirectToURL = STPIntentActionRedirectToURL.decodedObject(
+                    fromAPIResponse: dict["redirect_to_url"] as? [AnyHashable: Any])
+                if redirectToURL == nil {
+                    type = .unknown
+                }
+            case .useStripeSDK:
+                useStripeSDK = STPIntentActionUseStripeSDK.decodedObject(
+                    fromAPIResponse: dict["use_stripe_sdk"] as? [AnyHashable: Any])
+                if useStripeSDK == nil {
+                    type = .unknown
+                }
+            default: break
         }
 
         return STPIntentAction(
             type: type,
             redirectToURL: redirectToURL,
-            alipayHandleRedirect: alipayHandleRedirect,
             useStripeSDK: useStripeSDK,
-            oxxoDisplayDetails: oxxoDisplayDetails,
-            weChatPayRedirectToApp: weChatPayRedirectToApp,
-            boletoDisplayDetails: boletoDisplayDetails,
             allResponseFields: dict) as? Self
     }
 

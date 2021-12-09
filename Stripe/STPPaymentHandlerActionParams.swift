@@ -13,10 +13,12 @@ import Foundation
 #endif
 @_spi(STP) import StripeCore
 
+public typealias STPThreeDSCustomizationSettings = NSObject
+public typealias STDSTransaction = NSObject
+
 @available(iOSApplicationExtension, unavailable)
 @available(macCatalystApplicationExtension, unavailable)
 internal protocol STPPaymentHandlerActionParams: NSObject {
-    var threeDS2Service: STDSThreeDS2Service? { get }
     var threeDS2Transaction: STDSTransaction? { get set }
     var authenticationContext: STPAuthenticationContext { get }
     var apiClient: STPAPIClient { get }
@@ -46,35 +48,6 @@ internal class STPPaymentHandlerPaymentIntentActionParams: NSObject, STPPaymentH
         return paymentIntent?.stripeId
     }
 
-    private var _threeDS2Service: STDSThreeDS2Service?
-
-    var threeDS2Service: STDSThreeDS2Service? {
-        if !serviceInitialized {
-            serviceInitialized = true
-            _threeDS2Service = STDSThreeDS2Service()
-
-            STDSSwiftTryCatch.try(
-                {
-                    let configParams = STDSConfigParameters()
-                    if !(self.paymentIntent?.livemode ?? true) {
-                        configParams.addParameterNamed(
-                            "kInternalStripeTestingConfigParam", withValue: "Y")
-                    }
-                    self._threeDS2Service?.initialize(
-                        withConfig: configParams,
-                        locale: Locale.autoupdatingCurrent,
-                        uiSettings: self.threeDSCustomizationSettings.uiCustomization
-                            .uiCustomization)
-                },
-                catch: { _ in
-                    self._threeDS2Service = nil
-                },
-                finallyBlock: {
-                })
-        }
-
-        return _threeDS2Service
-    }
 
     init(
         apiClient: STPAPIClient,
@@ -117,36 +90,6 @@ internal class STPPaymentHandlerSetupIntentActionParams: NSObject, STPPaymentHan
 
     var intentStripeID: String? {
         return setupIntent?.stripeID
-    }
-
-    private var _threeDS2Service: STDSThreeDS2Service?
-
-    var threeDS2Service: STDSThreeDS2Service? {
-        if !serviceInitialized {
-            serviceInitialized = true
-            _threeDS2Service = STDSThreeDS2Service()
-
-            STDSSwiftTryCatch.try(
-                {
-                    let configParams = STDSConfigParameters()
-                    if !(self.setupIntent?.livemode ?? true) {
-                        configParams.addParameterNamed(
-                            "kInternalStripeTestingConfigParam", withValue: "Y")
-                    }
-                    self._threeDS2Service?.initialize(
-                        withConfig: configParams,
-                        locale: Locale.autoupdatingCurrent,
-                        uiSettings: self.threeDSCustomizationSettings.uiCustomization
-                            .uiCustomization)
-                },
-                catch: { _ in
-                    self._threeDS2Service = nil
-                },
-                finallyBlock: {
-                })
-        }
-
-        return _threeDS2Service
     }
 
     init(

@@ -82,29 +82,6 @@ public class STPImageLibrary: NSObject {
         return self.brandImage(for: brand, template: false)
     }
 
-    /// This returns the appropriate icon for the specified bank brand.
-    @objc(brandImageForFPXBankBrand:) public class func fpxBrandImage(for brand: STPFPXBankBrand)
-        -> UIImage
-    {
-        let imageName = "stp_bank_fpx_\(STPFPXBank.identifierFrom(brand) ?? "")"
-        let image = self.safeImageNamed(
-            imageName,
-            templateIfAvailable: false)
-        return image
-    }
-
-    /// An icon representing FPX.
-    @objc
-    public class func fpxLogo() -> UIImage {
-        return self.safeImageNamed("stp_fpx_logo", templateIfAvailable: false)
-    }
-
-    /// A large branding image for FPX.
-    @objc
-    public class func largeFpxLogo() -> UIImage {
-        return self.safeImageNamed("stp_fpx_big_logo", templateIfAvailable: false)
-    }
-
     /// An icon representing Afterpay.
     @objc
     public class func afterpayLogo() -> UIImage {

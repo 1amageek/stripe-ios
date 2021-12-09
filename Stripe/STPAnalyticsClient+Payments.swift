@@ -77,9 +77,7 @@ extension STPAnalyticsClient {
      */
     class func uiUsageLevelString(from productUsage: Set<String>) -> String {
         let uiUsageLevel: String
-        if productUsage.contains(STPPaymentContext.stp_analyticsIdentifier) {
-            uiUsageLevel = "full"
-        } else if productUsage.count == 1
+        if productUsage.count == 1
                     && productUsage.contains(STPPaymentCardTextField.stp_analyticsIdentifier)
         {
             uiUsageLevel = "card_text_field"
@@ -92,13 +90,6 @@ extension STPAnalyticsClient {
     }
 
     class func ocrTypeString() -> String {
-        if #available(iOS 13.0, macCatalyst 14.0, *) {
-            if STPAnalyticsClient.sharedClient.productUsage.contains(
-                STPCardScanner.stp_analyticsIdentifier)
-            {
-                return "stripe"
-            }
-        }
         return "none"
     }
 }

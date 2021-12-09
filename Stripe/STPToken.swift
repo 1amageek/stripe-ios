@@ -39,8 +39,6 @@ public class STPToken: NSObject, STPAPIResponseDecodable, STPSourceProtocol {
     /// The credit card details that were used to create the token. Will only be set if the token was created via a credit card or Apple Pay, otherwise it will be
     /// nil.
     @objc public private(set) var card: STPCard?
-    /// The bank account details that were used to create the token. Will only be set if the token was created with a bank account, otherwise it will be nil.
-    @objc public private(set) var bankAccount: STPBankAccount?
     /// When the token was created.
     @objc public private(set) var created: Date?
     @objc public private(set) var allResponseFields: [AnyHashable: Any] = [:]
@@ -83,12 +81,6 @@ public class STPToken: NSObject, STPAPIResponseDecodable, STPSourceProtocol {
             return false
         }
 
-        if (bankAccount != nil || object.bankAccount != nil)
-            && (!(bankAccount == object.bankAccount))
-        {
-            return false
-        }
-
         if let created1 = object.created {
             return livemode == object.livemode && type == object.type && (tokenId == object.tokenId)
                 && created == created1 && (card == object.card)
@@ -122,10 +114,7 @@ public class STPToken: NSObject, STPAPIResponseDecodable, STPSourceProtocol {
 
         let rawCard = dict.stp_dictionary(forKey: "card")
         token.card = STPCard.decodedObject(fromAPIResponse: rawCard)
-
-        let rawBankAccount = dict.stp_dictionary(forKey: "bank_account")
-        token.bankAccount = STPBankAccount.decodedObject(fromAPIResponse: rawBankAccount)
-
+        
         token.allResponseFields = dict as! [AnyHashable: Any]
 
         return token as? Self

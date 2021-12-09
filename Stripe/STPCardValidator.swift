@@ -293,18 +293,18 @@ public class STPCardValidator: NSObject {
         }
     }
 
-    /// Validates the given card details.
-    /// - Parameter card: The card details to validate.
-    /// - Returns: STPCardValidationStateValid if all fields are valid,
-    /// STPCardValidationStateInvalid if any field is invalid, or
-    /// STPCardValidationStateIncomplete if all fields are either incomplete or valid.
-    @objc(validationStateForCard:)
-    public class func validationState(forCard card: STPCardParams) -> STPCardValidationState {
-        return self.validationState(
-            forCard: card,
-            inCurrentYear: self.currentYear(),
-            currentMonth: self.currentMonth())
-    }
+//    /// Validates the given card details.
+//    /// - Parameter card: The card details to validate.
+//    /// - Returns: STPCardValidationStateValid if all fields are valid,
+//    /// STPCardValidationStateInvalid if any field is invalid, or
+//    /// STPCardValidationStateIncomplete if all fields are either incomplete or valid.
+//    @objc(validationStateForCard:)
+//    public class func validationState(forCard card: STPCardParams) -> STPCardValidationState {
+//        return self.validationState(
+//            forCard: card,
+//            inCurrentYear: self.currentYear(),
+//            currentMonth: self.currentMonth())
+//    }
 
     class func stringByRemovingSpaces(from string: String) -> String {
         let set = CharacterSet.whitespaces
@@ -348,39 +348,39 @@ public class STPCardValidator: NSObject {
         }
     }
 
-    class func validationState(
-        forCard card: STPCardParams, inCurrentYear currentYear: Int, currentMonth: Int
-    ) -> STPCardValidationState {
-        let numberValidation = self.validationState(
-            forNumber: card.number ?? "", validatingCardBrand: true)
-        let expMonthString = String(format: "%02lu", UInt(card.expMonth))
-        let expMonthValidation = self.validationState(forExpirationMonth: expMonthString)
-        let expYearString = String(format: "%02lu", UInt(card.expYear) % 100)
-        let expYearValidation = self.validationState(
-            forExpirationYear: expYearString,
-            inMonth: expMonthString,
-            inCurrentYear: currentYear,
-            currentMonth: currentMonth)
-        let brand = self.brand(forNumber: card.number ?? "")
-        let cvcValidation = self.validationState(forCVC: card.cvc ?? "", cardBrand: brand)
-
-        let states = [
-            NSNumber(value: numberValidation.rawValue),
-            NSNumber(value: expMonthValidation.rawValue),
-            NSNumber(value: expYearValidation.rawValue),
-            NSNumber(value: cvcValidation.rawValue),
-        ]
-        var incomplete = false
-        for boxedState in states {
-            let state = STPCardValidationState(rawValue: boxedState.intValue)
-            if state == .invalid {
-                return state!
-            } else if state == .incomplete {
-                incomplete = true
-            }
-        }
-        return incomplete ? .incomplete : .valid
-    }
+//    class func validationState(
+//        forCard card: STPCardParams, inCurrentYear currentYear: Int, currentMonth: Int
+//    ) -> STPCardValidationState {
+//        let numberValidation = self.validationState(
+//            forNumber: card.number ?? "", validatingCardBrand: true)
+//        let expMonthString = String(format: "%02lu", UInt(card.expMonth))
+//        let expMonthValidation = self.validationState(forExpirationMonth: expMonthString)
+//        let expYearString = String(format: "%02lu", UInt(card.expYear) % 100)
+//        let expYearValidation = self.validationState(
+//            forExpirationYear: expYearString,
+//            inMonth: expMonthString,
+//            inCurrentYear: currentYear,
+//            currentMonth: currentMonth)
+//        let brand = self.brand(forNumber: card.number ?? "")
+//        let cvcValidation = self.validationState(forCVC: card.cvc ?? "", cardBrand: brand)
+//
+//        let states = [
+//            NSNumber(value: numberValidation.rawValue),
+//            NSNumber(value: expMonthValidation.rawValue),
+//            NSNumber(value: expYearValidation.rawValue),
+//            NSNumber(value: cvcValidation.rawValue),
+//        ]
+//        var incomplete = false
+//        for boxedState in states {
+//            let state = STPCardValidationState(rawValue: boxedState.intValue)
+//            if state == .invalid {
+//                return state!
+//            } else if state == .incomplete {
+//                incomplete = true
+//            }
+//        }
+//        return incomplete ? .incomplete : .valid
+//    }
 
     class func minCVCLength() -> Int {
         return 3
